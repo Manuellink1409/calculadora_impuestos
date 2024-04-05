@@ -16,14 +16,27 @@ const tipOptions = [
   },
 ];
 
-export default function TipPercentageForm() {
+type Tip = {
+  setTip: (value: number) => void;
+};
+
+export default function TipPercentageForm({ setTip }: Tip) {
   return (
     <div className="text-gray-50 my-10">
       <div className="text-xl font-black mb-2">Propina:</div>
+
       {tipOptions.map((opt) => (
         <div key={opt.id}>
           <label htmlFor={opt.id}>{opt.label}</label>{" "}
-          <input type="radio" value={opt.value} id={opt.id} name="tip" />
+          <input
+            type="radio"
+            value={opt.value}
+            id={opt.id}
+            name="tip"
+            onClick={() => {
+              setTip(opt.value);
+            }}
+          />
         </div>
       ))}
     </div>
