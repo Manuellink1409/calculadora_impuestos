@@ -1,11 +1,13 @@
-import type { MenuItem, OrderItem } from "../types";
+import { Dispatch } from "react";
+import type { OrderItem } from "../types";
+import { OrderActions } from "../reducers/order-reducer";
 
 type OrdItem = {
   props: OrderItem;
-  deleteItem: (id: MenuItem["id"]) => void;
+  dispatch: Dispatch<OrderActions>;
 };
 
-export default function OrderContents({ props, deleteItem }: OrdItem) {
+export default function OrderContents({ props, dispatch }: OrdItem) {
   return (
     <>
       <div className="text-gray-50 mb-3">
@@ -14,7 +16,9 @@ export default function OrderContents({ props, deleteItem }: OrdItem) {
             {props.name} - ${props.price}
           </h1>
           <button
-            onClick={() => deleteItem(props.id)}
+            onClick={() =>
+              dispatch({ type: "delete_item", payload: { id: props.id } })
+            }
             className=" bg-red-800 rounded-full w-6 hover:bg-red-600 transition-colors"
           >
             X

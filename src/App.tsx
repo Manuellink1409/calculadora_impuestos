@@ -1,12 +1,13 @@
 import MenuItem from "./components/MenuItem";
 import OrderContents from "./components/OrderContents";
 import { menuItems } from "./data/db";
-import useOrder from "./hooks/useOrder";
 import OrderTotals from "./components/OrderTotals";
 import TipPercentageForm from "./components/TipPercentageForm";
+import { useReducer } from "react";
+import { InitialState, orderReducer } from "./reducers/order-reducer";
 
 export default function App() {
-  const { order, addItem, deleteItem, tip, setTip, placeOrder } = useOrder();
+  const [state, dispatch] = useReducer(orderReducer, InitialState);
 
   return (
     <>
@@ -21,32 +22,33 @@ export default function App() {
           <h2 className=" text-3xl text-gray-50 font-black mb-6">Menu</h2>
           <div className=" space-y-3">
             {menuItems.map((item) => (
-              <MenuItem key={item.id} item={item} addItem={addItem} />
+              <MenuItem key={item.id} item={item} dispatch={dispatch} />
             ))}
           </div>
         </div>
         <div className=" border-2 border-dashed border-[#373332] p-12 rounded-xl">
-          {order.length === 0 ? (
-            <p className="text-gray-50 text-2xl font-black">
-              Aún no hay pedidos
-            </p>
-          ) : (
+          {state?.order.length ? (
             <>
               <h2 className=" text-3xl text-gray-50 font-black mb-4">
                 Pedidos
               </h2>
-              {order.map((orderItem) => (
+              {state.order.map((orderItem) => (
                 <OrderContents
                   key={orderItem.id}
                   props={orderItem}
-                  deleteItem={deleteItem}
+                  dispatch={dispatch}
                 />
               ))}
+              <TipPercentageForm dispatch={dispatch} />
 
-              <TipPercentageForm setTip={setTip} />
-
-              <OrderTotals order={order} tip={tip} placeOrder={placeOrder} />
+              <OrderTotals
+                order={state.order}
+                tip={state.tip}
+                dispatch={dispatch}
+              />
             </>
+          ) : (
+            <>No hay pedidos</>
           )}
         </div>
       </main>
